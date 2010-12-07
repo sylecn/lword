@@ -1,0 +1,90 @@
+#!/usr/bin/env python
+# coding=utf-8
+
+"""
+"""
+
+from __future__ import with_statement
+
+def clear_screen():
+    """
+
+    """
+    import os
+    if os.getenv('EMACS'):
+        # assume emacs server is running
+        os.system('emacsclient --eval \(my-clear-default-shell-buffer\)')
+    else:
+        if os.name == 'nt':
+            os.system('cls')
+        else:
+            os.system('clear')
+
+def main():
+    """
+
+    """
+    DEFAULT_WORD_FILE = '/home/sylecn/projects/lword/words'
+    word = ''
+    explanation = ''
+    wrong_words = []
+    count = 0
+    with open(DEFAULT_WORD_FILE, 'r') as f:
+        clear_screen()
+        for line in f:
+            # print line, "#"
+            # continue
+            if line != '\n':
+                if word:
+                    explanation += line
+                else:
+                    word = line[:-1]
+                    count += 1
+                    explanation = ''
+            else:
+                # word is read, now print explanation and ask for spelling
+                print explanation,
+                input1 = raw_input("spell the word: ")
+                if input1 != word:
+                    wrong_words.append((explanation, word))
+                    print "wrong. try again.",
+                    input2 = raw_input("spell the word: ")
+                    if input2 != word:
+                        print "correct spell: ", word
+                        print " your 1st try: ", input1
+                        print " your 2nd try: ", input2
+                else:
+                    print "\n                correct."
+                    import time
+                    time.sleep(0.3)
+                clear_screen()
+                word = ''
+
+    # go through wrong words
+    wrong_count = len(wrong_words)
+    # print "-" * 80
+    print "grade: %d/%d (%.1f%%)" % (count - wrong_count, count,
+                                     100.0 * (count - wrong_count) / count)
+    if wrong_words:
+        print "now review wrong words."
+        while wrong_words:
+            new_wrong_words = []
+            for (explanation, word) in wrong_words:
+                print explanation,
+                input1 = raw_input("spell the word: ")
+                if input1 != word:
+                    new_wrong_words.append((explanation, word))
+                    print "wrong. try again.",
+                    input2 = raw_input("spell the word: ")
+                    if input2 != word:
+                        print "correct spell: ", word
+                        print " your 1st try: ", input1
+                        print " your 2nd try: ", input2
+                clear_screen()
+            wrong_words = new_wrong_words
+        print "done."
+    else:
+        print "Congratulations!"
+
+if __name__ == '__main__':
+    main()

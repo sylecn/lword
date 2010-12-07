@@ -1,0 +1,59 @@
+lword helps you memorize new words.
+
+you are asked to spell each new word defined in a word-file.
+
+the word-file is a simple text file.
+format is:
+<word>
+<explainations, hints> without empty newline between them.
+<newline>
+<word>
+<explainations, hints> without empty newline between them.
+<newline>
+...
+
+----start sample word file----
+fahrenheit
+/ˈfarənˌhīt/
+the temperature scale starts in F
+
+celsius
+/ˈselsēəs/
+the temperature scale starts in C
+----end sample word file----
+
+lword will have a db about which words you already known very well and which
+words you constantly make mistakes on.
+
+it also re-prompt old memorized word to you according to the famous the
+forgetting curve [1].
+
+
+
+* the forgetting curve
+一般记住后，在5分钟后重复一遍，20分钟后再重复一遍，1小时后，12小时后，1天后，2
+天后，5天后，8天后，14天后就会记得很牢。
+
+** db design
+
+   | word          | string    | the word                                   |
+   |               |           |                                            |
+   | count         | int       | how many times the user has typed the word |
+   | wrong_count   | int       | how many times the user got it wrong       |
+   |               |           |                                            |
+   | session_count | int       | how many sessions has this word mentioned? |
+   | last_session  | timestamp | when is last session                       |
+
+** sqlite
+   you can run sqlite in script like this
+       sqlite3 ex1 'select * from tbl1'
+   syntax:
+       sqlite3 <db-file-name> <SQL-statement>
+
+* I miss Javscript list and object notation now that I'm writing python code
+
+
+Footnotes: 
+[1]  http://en.wikipedia.org/wiki/Forgetting_curve
+     see also http://en.wikipedia.org/wiki/Hermann_Ebbinghaus
+
