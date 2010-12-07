@@ -1,3 +1,5 @@
+the lword project
+
 lword helps you memorize new words.
 
 you are asked to spell each new word defined in a word-file.
@@ -20,6 +22,7 @@ the temperature scale starts in F
 celsius
 /ˈselsēəs/
 the temperature scale starts in C
+
 ----end sample word file----
 
 lword will have a db about which words you already known very well and which
@@ -33,6 +36,18 @@ forgetting curve [1].
 * the forgetting curve
 一般记住后，在5分钟后重复一遍，20分钟后再重复一遍，1小时后，12小时后，1天后，2
 天后，5天后，8天后，14天后就会记得很牢。
+
+
+* implementation
+
+** phonemic symbols in words file
+   to show KK(Kenyon and Knott) phonemic symbols / IPA(International Phonetic
+   Alphabet), you need a good font.
+
+   Lucida Sans Unicode is said to support IPA.
+
+   The IPA-SAM fonts are proprietary copyrighted Encore fonts created using
+   Typecaster software supplied by the Summer Institute of Linguistics.
 
 ** db design
 

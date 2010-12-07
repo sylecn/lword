@@ -6,11 +6,15 @@
 
 from __future__ import with_statement
 
+import time
+import os
+
+TIME_FOR_NEW_WORD = 5
+
 def clear_screen():
     """
 
     """
-    import os
     if os.getenv('EMACS'):
         # assume emacs server is running
         os.system('emacsclient --eval \(my-clear-default-shell-buffer\)')
@@ -19,6 +23,16 @@ def clear_screen():
             os.system('cls')
         else:
             os.system('clear')
+
+def print_correct():
+    print "\n                correct."
+    time.sleep(0.3)
+
+def print_correction(word, input1, input2):
+    print "correct spell: ", word
+    print " your 1st try: ", input1
+    print " your 2nd try: ", input2
+    time.sleep(3.0)
 
 def main():
     """
@@ -32,8 +46,8 @@ def main():
     with open(DEFAULT_WORD_FILE, 'r') as f:
         clear_screen()
         for line in f:
-            # print line, "#"
-            # continue
+            if line.startswith('#'):
+                continue
             if line != '\n':
                 if word:
                     explanation += line
@@ -42,21 +56,33 @@ def main():
                     count += 1
                     explanation = ''
             else:
+                if not word:
+                    # ignore empty lines at beginning
+                    continue
                 # word is read, now print explanation and ask for spelling
                 print explanation,
                 input1 = raw_input("spell the word: ")
+                if input1 == '':
+                    # user press enter without trying.
+                    #TODO add to new words list
+                    print "learn new word\n"
+                    print word
+                    print explanation
+                    time.sleep(TIME_FOR_NEW_WORD)
+                    clear_screen()
+                    # now it's not new anymore
+                    print explanation
+                    input1 = raw_input("spell the word: ")
                 if input1 != word:
                     wrong_words.append((explanation, word))
                     print "wrong. try again.",
                     input2 = raw_input("spell the word: ")
                     if input2 != word:
-                        print "correct spell: ", word
-                        print " your 1st try: ", input1
-                        print " your 2nd try: ", input2
+                        print_correction(word, input1, input2)
+                    else:
+                        print_correct()
                 else:
-                    print "\n                correct."
-                    import time
-                    time.sleep(0.3)
+                    print_correct()
                 clear_screen()
                 word = ''
 
@@ -72,14 +98,27 @@ def main():
             for (explanation, word) in wrong_words:
                 print explanation,
                 input1 = raw_input("spell the word: ")
+                if input1 == '':
+                    # user press enter without trying.
+                    #TODO add to new words list
+                    print "learn new word\n"
+                    print word
+                    print explanation
+                    time.sleep(TIME_FOR_NEW_WORD)
+                    clear_screen()
+                    # now it's not new anymore
+                    print explanation
+                    input1 = raw_input("spell the word: ")
                 if input1 != word:
                     new_wrong_words.append((explanation, word))
                     print "wrong. try again.",
                     input2 = raw_input("spell the word: ")
                     if input2 != word:
-                        print "correct spell: ", word
-                        print " your 1st try: ", input1
-                        print " your 2nd try: ", input2
+                        print_correction(word, input1, input2)
+                    else:
+                        print_correct()
+                else:
+                    print_correct()
                 clear_screen()
             wrong_words = new_wrong_words
         print "done."
